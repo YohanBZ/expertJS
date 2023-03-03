@@ -1,15 +1,21 @@
-import { gestureString, knownGestures } from '../util/gestures.js';
-
 export default class HandGestureService {
   #gestureEstimator;
   #handPoseDetection;
   #handsVersion;
   #detector = null;
+  #gestureString;
 
-  constructor({ fingerpose, handPoseDetection, handsVersion }) {
+  constructor({
+    fingerpose,
+    handPoseDetection,
+    handsVersion,
+    gestureString,
+    knownGestures,
+  }) {
     this.#gestureEstimator = new fingerpose.GestureEstimator(knownGestures);
     this.#handPoseDetection = handPoseDetection;
     this.#handsVersion = handsVersion;
+    this.#gestureString = gestureString;
   }
 
   async estimate(keypoints3D) {
@@ -35,7 +41,7 @@ export default class HandGestureService {
         (keypoint) => keypoint.name === 'index_finger_tip',
       );
       yield { event: result.name, x, y };
-      console.log('detected', gestureString[result.name]);
+      console.log('detected', this.#gestureString[result.name]);
     }
   }
 
